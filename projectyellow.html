@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!-- projectYellow - Create a system that allows the user to write text using only a single button
+     Skrevet av Roger Birkenes Solli -->
+<html>
+    <head>
+        <title>projectYellow</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                background-color: #666666;
+            }
+            #wrapper {
+                background-color: #ffffff;
+                border-radius: 25px;
+                width: 475px;
+            }
+            #typer {
+                box-shadow: 1px 1px 5px #888888;
+                font-size: 60px;
+                padding-left: 120px;
+                padding-right: 120px;
+                padding-bottom: 40px;
+                padding-top: 40px;
+                background-color: #cccc00;
+            }
+            #grey01 {
+                color: #cccccc;
+                font-size: 30px;
+            }
+            #grey02 {
+                color: #999999;
+                font-size: 30px;
+            }
+            #grey03 {
+                color: #999999;
+                font-size: 30px;
+            }
+            #grey04 {
+                color: #cccccc;
+                font-size: 30px;
+            }
+            #letterOut {
+                font-size: 30px;
+            }
+            table {
+                table-layout: fixed;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body onload="blinky();"><br>
+        <center>
+        <div id="wrapper"><br>
+            
+            <div id="textContainer">
+                <table>
+                    <tr>
+                        <td colspan="5" align='center' height='85'>
+                            <h1><span id="textOut"></span></h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align='center'>
+                            <span id='grey01'> </span>
+                        </td>
+                        <td align='center'>
+                            <span id='grey02'> </span>
+                        </td>
+                        <td align='center'>
+                            <span id="letterOut">a+</span>
+                        </td>
+                        <td align='center'>
+                            <span id='grey03'></span>
+                        <td align='center'>
+                            <span id='grey04'></span>
+                        </td>    
+                    </tr>
+                </table>
+            </div><br><br>
+            <button id="typer" onmousedown="startCount();" onmouseup="stopCount();">!</button><br>
+                <p>Trykk for å bla igjennom bokstaver<br>Trykk og HOLD for å velge bokstav</p><br>
+        </div>
+        </center>
+        <script type="text/javascript">
+            var c = 0;
+            var t;
+            var timer_is_on = 0;
+            var letter = "a";
+            var text = "";
+            var seconds = 0;
+            var blinkTimer;
+            var blinker = document.getElementById("letterOut");
+            var g1 = "";
+            var g2 = "";
+            var g3 = "";
+            var g4 = "";
+            var letterCount = 97;
+            
+            function blinky() {
+                // Funksjon for å få inputbokstaven til å "blinke"
+                seconds++;
+                timer = setTimeout(function(){ blinky() }, 600);
+                if (seconds > 1) {
+                    clearTimeout(blinkTimer);
+                    seconds = 0;
+                    blinker.style.color = "#FFFFFF";
+                }
+                else {
+                    blinker.style.color = "#000000";
+                }
+            }
+            function timedCount() {
+                // Timer for å måle hvor lenge knappen er holdt inne
+                c++;
+                t = setTimeout(function(){ timedCount() }, 300);
+                if (c > 1) {
+                    stopCount();
+                }
+            }
+
+            function startCount() {
+                // Start timer funksjon - for å måle knappetrykk
+                if (!timer_is_on) {
+                    timer_is_on = 1;
+                    timedCount();
+                }
+                // Stopper Blink timeren - for å bedre kunne se hvilken bokstav som velges
+                clearTimeout(blinkTimer);
+                seconds = 0;
+                blinker.style.color = "#000000";
+            }
+
+            function stopCount() {
+                clearTimeout(t);
+                timer_is_on = 0;
+                if (c > 1) {
+                    // Når bruker HOLDER knappen - skriv inn bokstav
+                    if (letter !== "DEL") {
+                        if (letter === "SPACE") {
+                            text += " ";
+                            letter = "a";
+                            letterCount = 97;
+                        }
+                        else {
+                            text += letter;
+                            letter = "a";
+                            letterCount = 97;
+                        }
+                        document.getElementById("textOut").innerHTML = text;
+                        document.getElementById("letterOut").innerHTML = letter;
+                    }
+                    else {
+                        deleteletter();
+                        letter = "a";
+                        letterCount = 97;
+                        document.getElementById("textOut").innerHTML = text;
+                        document.getElementById("letterOut").innerHTML = letter;
+                    }
+                }
+                else {
+                    // Når bruker TRYKKER på knappen - bla igjennom
+                    if (letterCount >= 97 && letterCount <= 122) {
+                        letter = String.fromCharCode(letterCount);
+                        if (letterCount === 97) {
+                            g1 = "";
+                            g2 = "";
+                            g3 = "b";
+                            g4 = "c";
+                        }
+                        else if (letterCount === 98) {
+                            g1 = "";
+                            g2 = "a";
+                            g3 = "c";
+                            g4 = "d";
+                        }
+                        else if (letterCount === 121) {
+                            g1 = "w";
+                            g2 = "x";
+                            g3 = "z";
+                            g4 = "æ";
+                        }
+                        else if (letterCount == 122) {
+                            g1 = "x";
+                            g2 = "y";
+                            g3 = "æ";
+                            g4 = "ø";                            
+                        }
+                        else {
+                            g1 = String.fromCharCode(letterCount-2);
+                            g2 = String.fromCharCode(letterCount-1);
+                            g3 = String.fromCharCode(letterCount+1);
+                            g4 = String.fromCharCode(letterCount+2);
+                        }
+                    }
+                    else if (letterCount === 123) {
+                        letter = "æ";
+                        g1 = "y";
+                        g2 = "z";
+                        g3 = "ø";
+                        g4 = "å";
+                    }
+                    else if (letterCount === 124) {
+                        letter = "ø";
+                        g1 = "z";
+                        g2 = "æ";
+                        g3 = "å";
+                        g4 = "SPACE";                        
+                    }
+                    else if (letterCount === 125) {
+                        letter = "å";
+                        g1 = "æ";
+                        g2 = "ø";
+                        g3 = "SPACE";
+                        g4 = "DEL";                        
+                    }
+                    else if (letterCount === 126) {
+                        letter = "SPACE";
+                        g1 = "ø";
+                        g2 = "å";
+                        g3 = "DEL";
+                        g4 = "";                        
+                    }
+                    else if (letterCount === 127) {
+                        letter = "DEL";
+                        g1 = "å";
+                        g2 = "SPACE";
+                        g3 = "";
+                        g4 = "";                        
+                    }
+                    else if (letterCount === 128) {
+                        letter = "a";
+                        g1 = "SPACE";
+                        g2 = "DEL";
+                        g3 = "b";
+                        g4 = "c";
+                        letterCount = 97;
+                    }
+                    letterCount++;
+                    
+                    document.getElementById("textOut").innerHTML = text;
+                    document.getElementById("letterOut").innerHTML = letter;
+                    document.getElementById("grey01").innerHTML = g1;
+                    document.getElementById("grey02").innerHTML = g2;
+                    document.getElementById("grey03").innerHTML = g3;
+                    document.getElementById("grey04").innerHTML = g4;
+                }
+                c = 0;
+                
+            }
+            function deleteletter() {
+                // Slette siste bokstav fra text stringen
+                text = text.substring(0, text.length - 1);
+            }
+            
+        </script>
+    </body>
+</html>
+
+
